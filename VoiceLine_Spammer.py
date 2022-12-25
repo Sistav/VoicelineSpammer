@@ -5,7 +5,7 @@ import threading
 import tkinter as tk
 
 root = tk.Tk()
-root.geometry("170x140")
+root.geometry("170x170")
 root.title("")
 root.resizable(False, False)
 
@@ -13,6 +13,7 @@ ahk = AHK()
 stop = False
 seconds = 1
 selection = ""
+hotkey = "-"
 
 PRE_OPTIONS = ["Letters", "Numbers", "Symbols","Function Keys"]
 LETTERS = ["A","B","C","D","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
@@ -46,17 +47,21 @@ def grid_remove(LIST):
 def spammer():
     global stop
     global seconds
-    if stop == False:
+    global hotkey
+    print(ahk.key_state(hotkey))
+    if stop == False and not ahk.key_state(hotkey):
         button = options.get()
         ahk.key_press(button)
         threading.Timer(seconds, spammer).start()
     else:
-        pass
+        stop = True
 def make_true():
     global stop
     global seconds
+    global hotkey
     stop = False
     seconds = float(speed_entry.get())
+    hotkey = hotkey_entry.get()
     spammer()
 def stop():
     global stop
@@ -72,6 +77,10 @@ speed_entry = tk.Entry(root, width=10,)
 speed_entry.grid(row=2,column=1)
 blank_text =tk.Label(text='     ')
 blank_text.grid(row=1,column=2)
+hotkey_text =tk.Label(text='Hotkey')
+hotkey_text.grid(row=5,column=1)
+hotkey_entry = tk.Entry(root, width=10,)
+hotkey_entry.grid(row=6,column=1)
 start_button = tk.Button(root, text="Start", command=make_true)
 start_button.grid(row=1,column=3)
 stop_button = tk.Button(root, text="Stop", command=stop)
